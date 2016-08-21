@@ -36,10 +36,21 @@
      
       <div class="box-header">                   
         <a v-link="{path: '/add'}" class="btn btn-primary"><i class="fa  fa-plus"></i> Add {{module}}</a>
-        <button v-on:click="deleteRows" class="btn btn-danger"><i class="fa  fa-trash"></i> Remove Selected</button>
-        <div class="box-tools">
+        <button v-on:click="deleteRows" class="btn btn-danger"><i class="fa  fa-trash"></i> Remove Selected</button>    
+        <div class="btn-group">
+          <button type="button" class="btn btn-success">Excel</button>
+          <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+          <span class="caret"></span>
+          <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="<?php echo $path_export_xls;?>">Export</a></li>
+            <li><a href="<?php echo $path_download_template;?>">Download Template</a></li>            
+          </ul>
+        </div>
+        <div class="box-tools">          
           <div class="input-group input-group-sm" style="width: 150px;">
-            <input v-on:keyup.enter="search" v-model="searchText" type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+            <input @keyup="search | debounce 200" v-model="searchText" type="text" name="table_search" class="form-control pull-right" placeholder="Search">
             <div class="input-group-btn">
               <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
             </div>

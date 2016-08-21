@@ -319,6 +319,8 @@ var cList = Vue.extend({
 					self.getAll();
 					$('#check-all').attr('checked', false);
 				});
+			} else {
+				self.setNotification('error', 'Not ' + self.MODULE + ' selected');
 			}
 		},		
 		checkAll: function(event) {

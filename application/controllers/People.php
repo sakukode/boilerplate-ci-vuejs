@@ -3,8 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class People extends MY_Controller {
 
-	private $_modul_name = "People";
+	private $_modul_name = "people";
     private $_model_name = "people_model";
+    private $_table_name = "people";
+    private $_primary_key = "id";
     private $_model = "";
     private $_per_page = 15;
 
@@ -32,8 +34,11 @@ class People extends MY_Controller {
         $this->_loadjs();
         $this->_loadpart();
 
+        $data['path_export_xls'] = site_url($this->_modul_name."/export_xls");
+        $data['path_download_template'] = site_url($this->_modul_name."/download_template");
+
         $this->template->set_layout('layouts/main');
-        $this->template->set_content('pages/people/index');
+        $this->template->set_content('pages/people/index', $data);
         $this->template->render();
 	}
 
@@ -194,6 +199,56 @@ class People extends MY_Controller {
         $this->template->set_css('https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css', 'remote');        
         $this->template->set_css('AdminLTE.min.css');
         $this->template->set_css('skin-blue.min.css');    
+    }
+
+    public function export_xls() {
+        $this->load->library('excel');
+
+        $fields = $this->db->list_fields($this->_table_name);
+        $header = array();
+        $body = array();
+        $result = $this->_model->get_all();
+
+        foreach ($fields as $field) {       
+            $header[] = ucwords(str_replace("_", " ", $field));
+        }
+
+        if($result) {
+            foreach ($result as $row) {
+                $data = array();
+                foreach ($fields as $field) {
+                    $data[] = $row->$field;                    
+                }
+
+                $body[] = $data;
+            }
+        }
+
+        $openTo = 'browser';
+        $filename = $this->_table_name.'.xlsx';
+        $type = 'XLSX';
+
+        $this->excel->export($header, $body, $type, $openTo, $filename);
+    }
+
+    public function download_template() {
+        $this->load->library('excel');
+
+        $fields = $this->db->list_fields($this->_table_name);
+        $header = array();
+        $body = array();
+       
+        foreach ($fields as $field) {       
+            if($field != $this->_primary_key) {
+                $header[] = ucwords(str_replace("_", " ", $field));
+            }
+        }
+
+        $openTo = 'browser';
+        $filename = 'template_'.$this->_table_name.'.xlsx';
+        $type = 'XLSX';
+
+        $this->excel->export($header, $body, $type, $openTo, $filename);
     }
 
     protected function _loadjs() {      
