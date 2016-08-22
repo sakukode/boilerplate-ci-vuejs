@@ -39,6 +39,24 @@ var Model = {
 			}
 		});
 	},
+	getGroups: function(callback) {
+		$.ajax({
+			type: "get",
+			url: this.PATH_MODUL + "get_groups",
+			data: {},
+			success: function(response) {
+				//console.log(response);
+				if(response) {
+					callback(JSON.parse(response));
+				} else {
+					callback(false);
+				}
+			},
+			error: function() {
+				callback(false);
+			}
+		});
+	},
 	post: function(data, callback) {
 		$.ajax({
 			type: "post",
@@ -380,6 +398,7 @@ var cForm = Vue.extend({
 			lastname: '',
 			email: '',
 			group: '',
+			groups: [],
 			phone: '',
 			action: '',
 			label: 'Add',
@@ -524,9 +543,18 @@ var cForm = Vue.extend({
 			} else {
 				self.$set('action','POST');
 			}
+		},
+		getGroups: function() {
+			var self = this;
+			Model.getGroups(function(result){
+				if(result) {
+					self.groups = result;
+				}
+			});
 		}
 	},
-	created: function() {		
+	created: function() {	
+		this.getGroups();	
 		this.setForm();
 	}
 });

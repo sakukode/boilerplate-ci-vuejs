@@ -29,7 +29,7 @@ class MY_Controller extends CI_Controller {
         {
             $response = array(
                 'status'  => FALSE,
-                'error' => $this->upload->display_errors()
+                'message' => $this->upload->display_errors()
             );
             
             return $response;
@@ -42,7 +42,7 @@ class MY_Controller extends CI_Controller {
             $response = array(
                 'status' => TRUE,
                 'filename' => $filename,
-                'error' => ''
+                'message' => ''
             );
         
             return $response;

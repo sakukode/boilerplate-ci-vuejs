@@ -9,6 +9,7 @@ class People extends MY_Controller {
     private $_primary_key = "id";
     private $_model = "";
     private $_per_page = 15;
+    private $_exclude_field = array('id', 'created_at', 'updated_at', 'deleted_at');
 
 	function __construct()
     {
@@ -228,7 +229,7 @@ class People extends MY_Controller {
         $filename = $this->_table_name.'.xlsx';
         $type = 'XLSX';
 
-        $this->excel->export($header, $body, $type, $openTo, $filename);
+        $this->excel->write($header, $body, $type, $openTo, $filename);
     }
 
     public function download_template() {
@@ -237,9 +238,10 @@ class People extends MY_Controller {
         $fields = $this->db->list_fields($this->_table_name);
         $header = array();
         $body = array();
+        $exclude_field = $this->_exclude_field;
        
         foreach ($fields as $field) {       
-            if($field != $this->_primary_key) {
+            if(!in_array($field, $exclude_field)) {
                 $header[] = ucwords(str_replace("_", " ", $field));
             }
         }
@@ -248,13 +250,80 @@ class People extends MY_Controller {
         $filename = 'template_'.$this->_table_name.'.xlsx';
         $type = 'XLSX';
 
-        $this->excel->export($header, $body, $type, $openTo, $filename);
+        $this->excel->write($header, $body, $type, $openTo, $filename);
+    }
+
+    public function import_xls() {
+        $input_file = 'filexls';
+        $file = $_FILES[$input_file];
+
+        //get fields list
+        $exclude_field = $this->_exclude_field;
+        $fields = $this->db->list_fields($this->_table_name);
+        $header = array();
+        foreach ($fields as $field) {
+            if(!in_array($field, $exclude_field)) {
+                $header[] = $field;
+            }
+        }
+
+        //config file upload
+        $config = array(
+            'upload_path' => './upload/',
+            'allowed_types' => 'xls|xlsx',
+            //'max_size' => '2000',
+            'encrypt_name' => TRUE
+        );
+
+        //upload file
+        $result = $this->_upload_file($input_file, $file, $config);
+
+        if($result['status'] == true) {
+            /** if success uploaded file */
+            $file = './upload/'.$result['filename'];
+        
+            //read file xls
+            $this->load->library('excel');
+            $result = $this->excel->read($file);
+            $data = array();
+
+            //push data from row xls
+            foreach ($result->getSheetIterator() as $sheet) {
+                foreach ($sheet->getRowIterator() as $key => $index) {
+                    if($key != 1) {
+                        $row = array();
+                        if(count($index) == count($header)) {
+                            foreach ($header as $k => $v) {
+                                $row[$v] = $index[$k];
+                            }
+
+                            $data[] = $row;
+                        }
+                    }
+                }
+            }
+
+            //insert data to table database
+            $result = $this->_model->insert($data);
+
+            if($result) {
+                echo json_encode(array('status' => true, 'message' => 'Success Import Data from Xls'));
+
+                //remove file temp xls
+                unlink($file);
+            } else {
+                echo json_encode(array('status' => false, 'message' => 'Failed Import Data from Xls'));
+            }
+        } else {
+            echo json_encode($result);
+        }
     }
 
     protected function _loadjs() {      
         $this->template->set_js('jquery-2.2.3.min.js','header');
         $this->template->set_js('bootstrap.min.js','footer');
         $this->template->set_js('sweetalert.min.js','footer');    
+        $this->template->set_js('app.min.js','footer');
         $this->template->set_js(base_url().'build/vue.js','footer', 'remote');  
         $this->template->set_js(base_url().'build/vue-router.js','footer', 'remote'); 
         $this->template->set_js(base_url().'build/vue-animated-list.js','footer', 'remote'); 

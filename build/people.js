@@ -77,6 +77,24 @@ var Model = {
 				callback({status: false});
 			}
 		});
+	},
+	importXls: function(data, callback) {
+		$.ajax({
+			url: this.PATH_MODULE + 'import_xls',
+			type: 'POST',
+			dataType: 'json',
+			data: data,
+			async: true,
+			success: function(response) {
+				callback(response);
+			},
+			error: function() {
+				callback({status: false, 'message': 'Error Request'});
+			},
+			cache: false,
+			contentType: false,
+			processData: false
+		});
 	}
 };
 
@@ -202,7 +220,8 @@ var cList = Vue.extend({
 			page: this.$route.query.page ? this.$route.query.page : 1,
 			previousPage: '',
 			nextPage: '',
-			searchText: this.$route.query.q ? this.$route.query.q : '',			
+			searchText: this.$route.query.q ? this.$route.query.q : '',
+			loading: false			
 		}
 	},
 	computed: {
@@ -336,6 +355,27 @@ var cList = Vue.extend({
 			var order = 'DESC';
 			var sortClass = GridView.sort(by, order);
 		},		
+		selectFile: function(event) {
+			event.preventDefault();
+			$('#file-xls').trigger('click');
+		},
+		importXls: function(event) {
+			var self = this;
+			self.$set('loading', true);
+			var formData = new FormData();
+			formData.append("filexls", event.target.files[0]);
+
+			Model.importXls(formData, function(result) {
+				//self.$set('loading', false);
+				if(result.status) {
+					self.setNotification('success', result.message);
+					self.getAll();
+					self.$set('loading', false);
+				} else {
+					self.setNotification('error', result.message);
+				}
+			});
+		}
 	},
 	created: function() {
 		this.setSortDefault();

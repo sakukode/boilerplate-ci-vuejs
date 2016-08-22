@@ -146,6 +146,12 @@ class User extends CI_Controller
         } 
     }
 
+    public function get_groups() {
+        $groups = $this->ion_auth->groups()->result();
+
+        echo json_encode($groups);
+    }
+
     public function insert() {
         if($this->_set_validation() == TRUE) {
             $username = $this->input->post('username');
@@ -348,6 +354,7 @@ class User extends CI_Controller
         $this->template->set_js('bootstrap.min.js','footer');          
         $this->template->set_js('sweetalert.min.js','footer');     
         $this->template->set_js('icheck.min.js','footer');
+        $this->template->set_js('app.min.js','footer');
         $this->template->set_js(base_url().'build/vue.js','footer', 'remote');  
         $this->template->set_js(base_url().'build/vue-router.js','footer', 'remote'); 
         $this->template->set_js(base_url().'build/vue-animated-list.js','footer', 'remote'); 

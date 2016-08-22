@@ -45,7 +45,11 @@
           </button>
           <ul class="dropdown-menu" role="menu">
             <li><a href="<?php echo $path_export_xls;?>">Export</a></li>
-            <li><a href="<?php echo $path_download_template;?>">Download Template</a></li>            
+            <li><a href="<?php echo $path_download_template;?>">Download Template</a></li> 
+            <li>
+              <a v-on:click="selectFile" href="#">Import</a>
+              <input type="file" name="file_xls" id="file-xls" style="display:none" v-on:change="importXls">
+              </li>
           </ul>
         </div>
         <div class="box-tools">          
@@ -82,6 +86,9 @@
             </td>
           </tr>         
           
+          <tr v-if="!models">
+            <td colspan="7" class="text-center">no data found. <a v-link="{path: '/add'}">please add new</a></td>
+          </tr>
           </table>
       </div>
       <div class="box-footer">
@@ -95,6 +102,9 @@
             <li v-if="nextPage"><a v-on:click="paging(nextPage, $event)" href="">»</a></li>
           </ul>
       </div>  
+      <div class="overlay" v-if="loading">
+          <i class="fa fa-refresh fa-spin"></i>
+      </div>
     </template>
 
 

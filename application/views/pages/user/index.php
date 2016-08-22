@@ -133,8 +133,7 @@
                   <div class="col-sm-10">
                     <select class="form-control" initial="off" v-validate:group="ruleGroup" v-model="group">
                       <option value="">--Select Group--</option>
-                      <option value="1">Admin</option>
-                      <option value="2">Members</option>
+                      <option v-for="gp in groups" v-bind:value="gp.id">{{gp.name}}</option>   
                     </select>
                     <p v-if="$validation.group.required" class="text-red">{{$validation.group.required}}</p>
                   </div>

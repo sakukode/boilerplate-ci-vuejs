@@ -183,7 +183,8 @@ class Group extends MY_Controller {
     protected function _loadjs() {      
         $this->template->set_js('jquery-2.2.3.min.js','header');
         $this->template->set_js('bootstrap.min.js','footer');
-        $this->template->set_js('sweetalert.min.js','footer');    
+        $this->template->set_js('sweetalert.min.js','footer');   
+        $this->template->set_js('app.min.js','footer'); 
         $this->template->set_js(base_url().'build/vue.js','footer', 'remote');  
         $this->template->set_js(base_url().'build/vue-router.js','footer', 'remote'); 
         $this->template->set_js(base_url().'build/vue-animated-list.js','footer', 'remote'); 
