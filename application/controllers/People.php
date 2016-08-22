@@ -8,7 +8,6 @@ class People extends MY_Controller {
     private $_table_name = "people";
     private $_primary_key = "id";
     private $_model = "";
-    private $_per_page = 15;
     private $_exclude_field = array('id', 'created_at', 'updated_at', 'deleted_at');
 
 	function __construct()
@@ -48,7 +47,7 @@ class People extends MY_Controller {
         $by = $this->input->get('by');
         $sort = $this->input->get('sort');
         $page = $this->input->get('page');
-        $per_page = $this->_per_page;
+        $per_page = $this->_PER_PAGE;
 
         $total = $total = $this->_model->where('first_name', 'LIKE', $search, TRUE)->where('last_name', 'LIKE', $search, TRUE)->count_rows();
         $data = $this->_model->where('first_name', 'LIKE', $search, TRUE)->where('last_name', 'LIKE', $search, TRUE)->order_by($by, $sort)->paginate($per_page, $total, $page);

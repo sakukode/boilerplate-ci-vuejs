@@ -2,11 +2,12 @@
 
 class MY_Controller extends CI_Controller {
 
-	 protected $_PER_PAGE = 15;
+	 protected $_PER_PAGE = 0;
 
         public function __construct()
         {
             parent::__construct();
+            $this->_PER_PAGE = get_setting('perpage');
 
             if (!$this->ion_auth->logged_in()) {
             	redirect('login');

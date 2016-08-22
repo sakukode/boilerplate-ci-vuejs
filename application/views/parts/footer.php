@@ -4,5 +4,5 @@
 	
 </div>
 <!-- Default to the left -->
-<strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
+<strong>Copyright &copy; 2016 <a href="#"><?php echo get_setting('sitename');?></a>.</strong> All rights reserved.
 </footer>

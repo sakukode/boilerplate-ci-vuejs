@@ -4,8 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class User extends CI_Controller
 {
     private $_modul_name = 'User';
-    private $_per_page = 15;
- 
+  
     function __construct()
     {
         parent::__construct();
@@ -78,7 +77,7 @@ class User extends CI_Controller
         $by = $this->input->get('by');
         $sort = $this->input->get('sort');
         $page = $this->input->get('page');
-        $per_page = $this->_per_page;
+        $per_page = $this->_PER_PAGE;
 
         $this->load->model('user_model');
         $total = $total = $this->user_model->where('first_name', 'LIKE', $search, TRUE)->where('last_name', 'LIKE', $search, TRUE)->where('email', 'LIKE', $search, TRUE)->count_rows();
