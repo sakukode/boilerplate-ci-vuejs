@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class User extends CI_Controller
 {
     private $_modul_name = 'User';
+    protected $_PER_PAGE = 0;
   
     function __construct()
     {
@@ -12,6 +13,7 @@ class User extends CI_Controller
         $this->load->helper(array('form'));
         $this->template->set_platform('public');
         $this->template->set_theme('admin-lte');        
+        $this->_PER_PAGE = get_setting('perpage');
     }
 
     public function login()
